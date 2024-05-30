@@ -3,6 +3,7 @@ const path = require('path');
 const juice = require('juice');
 const moment = require('moment');
 const sass = require('sass');
+const minify = require('html-minifier').minify;
 
 module.exports = async (tweet, bg = 'default') => {
     // 
@@ -175,7 +176,14 @@ module.exports = async (tweet, bg = 'default') => {
     main = main.replace('%INCLUDES%', html_includes)
 
     const html_inline_style = juice(`<style>${css}</style>` + main)
-    const html = html_inline_style
+    const html = minify(html_inline_style, {
+        collapseWhitespace: true,
+        decodeEntities: true,
+        minifyCSS: true,
+        processConditionalComments: true,
+        removeAttributeQuotes: true,
+        sortAttributes: true
+    })
 
     return html
 }
